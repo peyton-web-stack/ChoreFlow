@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChoreFlow Pro - Cinematic Fluid Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Hide scrollbars for an authentic mobile viewport look */
+        .phone-screen::-webkit-scrollbar { width: 0px; background: transparent; }
+        
+        /* Hardware Standby Power State */
+        .screen-off {
+            filter: brightness(0) contrast(2);
+            background: #000000 !important;
+            pointer-events: none;
+        }
+        .screen-off * { opacity: 0 !important; }
+
+        /* Smooth Biometric Dynamic Island Pulse */
+        @keyframes faceid {
+            0% { width: 90px; height: 22px; background: #000; }
+            30% { width: 130px; height: 32px; background: #16a34a; }
+            70% { width: 130px; height: 32px; background: #16a34a; }
+            100% { width: 90px; height: 22px; background: #000; }
+        }
+        .faceid-active { animation: faceid 1.2s ease-in-out; }
+
+        /* 1. CINEMATIC BOOT ENGINE: Keyframe entries for fluid stagger cascading on load */
+        @keyframes slideDown {
+            from { transform: translateY(-15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes scaleUp {
+            from { transform: scale(0.96); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .animate-boot-header { animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-boot-input { animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards; opacity: 0; }
+        .animate-boot-tabs { animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards; opacity: 0; }
+        .animate-boot-list { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards; opacity: 0; }
+
+        /* Shimmer Effect for Empty State Sparkle */
+        .shimmer-glow::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.15), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 2.5s infinite;
+        }
+
+        /* 3. TACTILE CHECKBOX REBOUND: Mechanical pop when completed */
+        .task-card-bounce {
+            animation: cardPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes cardPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(0.97); }
+            70% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        @media (max-width: 768px) {
+  /* Targets the container wrapping your app */
+  div[class*="max-w-[320px]"] {
+    max-width: 100% !important;
+    aspect-ratio: auto !important;
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+
+  /* Removes the fake borders and fills the phone screen */
+  .phone-screen {
+    width: 100vw !important;
+    height: 100vh !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+}
+
+
+    </style>
+</head>
+<body class="bg-slate-950 min-h-screen flex items-center justify-center p-4 font-sans antialiased select-none">
+
+    <div class="relative w-full max-w-[320px] aspect-[9/18.5] transition-all duration-300">
+        
+        <div class="absolute inset-0 bg-zinc-900/95 p-2.5 rounded-[48px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),inset_0_1px_2px_rgba(255,255,255,0.15)] border-[2px] border-zinc-700/60 ring-4 ring-zinc-800/40 w-full h-full">
+            
+            <button onclick="adjustDisplay('up')" class="absolute -left-[5px] top-24 w-[3px] h-9 bg-zinc-700 rounded-l-xs border-l border-zinc-600 active:translate-x-[1px] transition-all cursor-pointer z-50" title="Vol Up"></button>
+            <button onclick="adjustDisplay('down')" class="absolute -left-[5px] top-36 w-[3px] h-9 bg-zinc-700 rounded-l-xs border-l border-zinc-600 active:translate-x-[1px] transition-all cursor-pointer z-50" title="Vol Down"></button>
+            <button onclick="togglePower()" class="absolute -right-[5px] top-30 w-[3px] h-12 bg-zinc-700 rounded-r-xs border-r border-zinc-600 active:-translate-x-[1px] transition-all cursor-pointer z-50" title="Power Key"></button>
+
+            <div id="dynamic-island" onclick="triggerBiometrics()" class="absolute top-3.5 left-1/2 -translate-x-1/2 w-[90px] h-[22px] bg-black rounded-full z-50 flex items-center justify-center shadow-md cursor-pointer transition-all duration-300 active:scale-95">
+                <div id="island-content" class="w-full h-full flex items-center justify-center text-white text-[9px] font-bold tracking-wide opacity-0 transition-opacity duration-200">
+                    <i class="fa-solid fa-face-id mr-1 text-emerald-400"></i> FaceID
+                </div>
+                <div class="w-1.5 h-1.5 bg-zinc-950 rounded-full border border-zinc-900 absolute right-3 opacity-70"></div>
+            </div>
+
+            <div id="phone-screen" class="phone-screen w-full h-full bg-slate-900 flex flex-col relative pt-11 pb-5 px-3.5 transition-all duration-500 ease-in-out border border-black/40" style="border-radius: 38px !important; overflow: hidden !important; mask-image: -webkit-radial-gradient(white, black);">
+                
+                <div class="absolute inset-0 pointer-events-none z-0" style="border-radius: 38px !important; overflow: hidden !important;">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900 to-indigo-950/70"></div>
+                    <div class="absolute -top-12 -left-12 w-40 h-40 bg-blue-600/10 rounded-full filter blur-xl"></div>
+                    <div class="absolute bottom-24 -right-12 w-40 h-40 bg-purple-600/10 rounded-full filter blur-xl"></div>
+                </div>
+
+                <div class="absolute top-3 left-0 right-0 px-6 flex justify-between text-[10px] font-bold text-slate-200/90 z-40 select-none pointer-events-none tracking-tight">
+                    <span id="phone-time">10:36 AM</span>
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-signal text-[8px]"></i>
+                        <i class="fa-solid fa-wifi text-[8px]"></i>
+                        <i class="fa-solid fa-battery-three-quarters text-[10px] text-emerald-400"></i>
+                    </div>
+                </div>
+
+                <header class="mt-1 mb-2.5 z-10 shrink-0 animate-boot-header">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h1 class="text-lg font-black text-white tracking-tight">
+                                <i class="fa-solid fa-house-circle-check text-blue-500 mr-1 text-base"></i>ChoreFlow
+                            </h1>
+                            <p id="current-date" class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">THU, JUN 25</p>
+                        </div>
+                        <span id="completion-stats" class="text-[9px] font-extrabold bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-md border border-blue-500/20 backdrop-blur-xs transition-all duration-300">0%</span>
+                    </div>
+                </header>
+
+                <div class="bg-slate-800/40 backdrop-blur-md p-2 rounded-xl border border-white/5 mb-3 shrink-0 z-10 shadow-lg animate-boot-input">
+                    <form id="task-form" class="flex gap-1.5 items-center">
+                        <input type="text" id="task-title" required placeholder="Type a chore..." 
+                            class="flex-1 px-2.5 py-1.5 bg-slate-950/50 border border-white/5 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs transition-all">
+                        
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 hover:scale-[1.04] active:scale-[0.94] text-white font-bold h-7.5 px-3 rounded-lg text-[11px] transition-all duration-200 shrink-0 flex items-center justify-center cursor-pointer shadow-md shadow-blue-900/20">
+                            Add
+                        </button>
+                    </form>
+                </div>
+
+                <div class="flex gap-1 bg-slate-950/60 p-1 rounded-lg text-[9px] font-bold mb-3 shrink-0 z-10 border border-white/5 animate-boot-tabs">
+                    <button onclick="filterTasks('all')" id="filter-all" class="flex-1 py-0.5 rounded-md transition-all cursor-pointer bg-slate-800 text-white shadow-xs text-center">All</button>
+                    <button onclick="filterTasks('active')" id="filter-active" class="flex-1 py-0.5 rounded-md transition-all cursor-pointer text-slate-400 text-center hover:text-white">Active</button>
+                    <button onclick="filterTasks('completed')" id="filter-completed" class="flex-1 py-0.5 rounded-md transition-all cursor-pointer text-slate-400 text-center hover:text-white">Done</button>
+                </div>
+
+                <div id="tasks-container" class="space-y-1.5 flex-1 overflow-y-auto pr-0.5 z-10 animate-boot-list">
+                    </div>
+
+                <div id="empty-state" class="hidden my-auto py-6 text-center z-10 relative overflow-hidden rounded-xl bg-slate-800/10 border border-white/[0.02] p-4 group">
+                    <div class="shimmer-glow absolute inset-0 pointer-events-none"></div>
+                    <i class="fa-solid fa-sparkles text-blue-400 text-xl mb-2 opacity-80 group-hover:rotate-12 transition-transform duration-300"></i>
+                    <h3 class="text-xs font-bold text-slate-200 tracking-wide">Your list is empty!</h3>
+                    <p class="text-[9px] text-slate-500 mt-0.5">Add a chore above to get started.</p>
+                </div>
+
+                <div class="pt-2 text-center border-t border-white/5 mt-2.5 shrink-0 z-10 animate-boot-list">
+                    <button onclick="clearCompleted()" class="text-[9px] font-bold text-rose-400/80 hover:text-rose-300 active:scale-95 cursor-pointer transition-all">
+                        <i class="fa-solid fa-dumpster-fire mr-1"></i> Purge Completed Stack
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('choreflow_tasks_v2')) || [
+            { id: 1, title: "Take out the trash and recycling", completed: false },
+            { id: 2, title: "Wash the dishes and wipe down counters", completed: true }
+        ];
+        
+        let currentFilter = 'all';
+        let isPowerOn = true;
+        let brightnessScale = 100;
+
+        const taskForm = document.getElementById('task-form');
+        const tasksContainer = document.getElementById('tasks-container');
+        const emptyState = document.getElementById('empty-state');
+        const completionStats = document.getElementById('completion-stats');
+        const phoneScreen = document.getElementById('phone-screen');
+        const dynamicIsland = document.getElementById('dynamic-island');
+        const islandContent = document.getElementById('island-content');
+
+        function syncSystemTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            document.getElementById('phone-time').innerText = `${hours}:${minutes} ${ampm}`;
+        }
+        setInterval(syncSystemTime, 1000);
+        syncSystemTime();
+
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase();
+
+        taskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const inputField = document.getElementById('task-title');
+            const titleText = inputField.value.trim();
+            if(!titleText) return;
+
+            const newTask = {
+                id: Date.now(),
+                title: titleText,
+                completed: false
+            };
+            tasks.unshift(newTask);
+            saveAndRender();
+            taskForm.reset();
+        });
+
+        function deleteTask(id) {
+            const element = document.getElementById(`task-id-${id}`);
+            if(element) {
+                element.classList.add('scale-90', 'opacity-0');
+                element.style.transition = 'all 0.2s cubic-bezier(0.36, 0.07, 0.19, 0.97)';
+                setTimeout(() => {
+                    tasks = tasks.filter(t => t.id !== id);
+                    saveAndRender();
+                }, 180);
+            }
+        }
+
+        // 3. SNAPPY CHECKBOX POP ENGINE: Triggers quick rebound physics before redraw toggles
+        function toggleComplete(id) {
+            const card = document.getElementById(`task-id-${id}`);
+            if(card) {
+                card.classList.add('task-card-bounce');
+                
+                // Track transition state updating array sets immediately after the physics sequence pass
+                setTimeout(() => {
+                    tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+                    saveAndRender();
+                }, 200);
+            }
+        }
+
+        function clearCompleted() {
+            tasks = tasks.filter(t => !t.completed);
+            saveAndRender();
+        }
+
+        function adjustDisplay(direction) {
+            if (!isPowerOn) return;
+            if(direction === 'up' && brightnessScale < 120) brightnessScale += 10;
+            if(direction === 'down' && brightnessScale > 60) brightnessScale -= 10;
+            phoneScreen.style.filter = `brightness(${brightnessScale}%)`;
+        }
+
+        function togglePower() {
+            isPowerOn = !isPowerOn;
+            if(!isPowerOn) {
+                phoneScreen.classList.add('screen-off');
+            } else {
+                phoneScreen.classList.remove('screen-off');
+                triggerBiometrics();
+            }
+        }
+
+        function triggerBiometrics() {
+            if(!isPowerOn) return;
+            dynamicIsland.classList.remove('faceid-active');
+            void dynamicIsland.offsetWidth; 
+            dynamicIsland.classList.add('faceid-active');
+            
+            islandContent.classList.remove('opacity-0');
+            setTimeout(() => { islandContent.classList.add('opacity-0'); }, 1000);
+        }
+
+        function filterTasks(type) {
+            currentFilter = type;
+            ['all', 'active', 'completed'].forEach(f => {
+                const btn = document.getElementById(`filter-${f}`);
+                if (f === type) {
+                    btn.className = "flex-1 py-0.5 rounded-md transition-all cursor-pointer bg-slate-800 text-white shadow-xs text-center";
+                } else {
+                    btn.className = "flex-1 py-0.5 rounded-md transition-all cursor-pointer text-slate-400 text-center hover:text-white";
+                }
+            });
+            render();
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('choreflow_tasks_v2', JSON.stringify(tasks));
+            render();
+        }
+
+        function render() {
+            tasksContainer.innerHTML = '';
+            
+            const filteredTasks = tasks.filter(t => {
+                if (currentFilter === 'active') return !t.completed;
+                if (currentFilter === 'completed') return t.completed;
+                return true;
+            });
+
+            if (filteredTasks.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex', 'flex-col', 'items-center', 'justify-center');
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex', 'flex-col', 'items-center', 'justify-center');
+            }
+
+            filteredTasks.forEach((task, index) => {
+                const card = document.createElement('div');
+                card.id = `task-id-${task.id}`;
+                
+                // Smooth insertion slide animation injected inline for newly generated tasks
+                card.className = `p-2.5 rounded-xl border border-white/5 bg-slate-800/20 backdrop-blur-md flex items-center justify-between gap-2.5 transition-all duration-300 hover:bg-slate-800/30 ${task.completed ? 'opacity-35 mix-blend-luminosity' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                        <button onclick="toggleComplete(${task.id})" class="w-4 h-4 rounded-md border border-slate-700 bg-slate-950/60 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 active:scale-90 ${task.completed ? 'bg-blue-600! border-blue-500! text-white' : 'hover:border-blue-500'} flex-shrink-0">
+                            ${task.completed ? '<i class="fa-solid fa-check text-[9px]"></i>' : ''}
+                        </button>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-[11px] font-medium text-slate-200 tracking-wide break-words transition-all duration-300 ${task.completed ? 'line-through text-slate-500' : ''}">
+                                ${task.title}
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="deleteTask(${task.id})" class="text-slate-500 hover:text-rose-400 hover:scale-110 active:scale-90 p-1 text-xs cursor-pointer transition-all duration-200" title="Delete Chore">
+                        <i class="fa-regular fa-trash-can text-[11px]"></i>
+                    </button>
+                `;
+                tasksContainer.appendChild(card);
+            });
+
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+            completionStats.innerText = `${percentage}%`;
+        }
+
+        render();
+        triggerBiometrics();
+    </script>
+</body>
